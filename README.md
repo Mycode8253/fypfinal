@@ -25,6 +25,7 @@ For windows only because i did mine in windows......
 Follow the steps to get the project running 
 1. Download project from the green clone icon(right side top) top make sure to be in master branch (left side) using the zip file.
 1. Unzip it (obviously you will do it).
+1. Open the command prompt
 1. Install python if you dont have it ( from the official python website )
 1. Install Pillow
   1. pip install pillow
@@ -36,4 +37,3 @@ Follow the steps to get the project running
 1. when "speak' comes on command prompt try to speak out what ever letter comes on the UI or any picture name like "boat" "windmill" "boat "
 "computer"
 1. It may be shitty but it will improve.
-1. 
