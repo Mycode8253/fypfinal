@@ -31,6 +31,7 @@ Follow the steps to get the project running
   1. pip install pillow
   1. if pillow didnt install or if you get any "wheel blah blah ...." error then you can install from this website https://www.lfd.uci.edu/~gohlke/pythonlibs/#pillow 
   1. Google it in online u will get in online mostly a youtube when u search it.
+1. pip install SpeechRecognition 
 1. Then open the command prompt in the directory where y unzipped it 
 1. Make sure the the commad prompt is in project directory when u do the command "dir" in command prompt u should all the files of the project.
 1. "python startingPage.py" - command will start the project .....observe the terminal outputs ......
