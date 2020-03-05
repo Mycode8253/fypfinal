@@ -36,4 +36,4 @@ Follow the steps to get the project running
 1. "python startingPage.py" - command will start the project .....observe the terminal outputs ......
 1. when "speak' comes on command prompt try to speak out what ever letter comes on the UI or any picture name like "boat" "windmill" "boat "
 "computer"
-1. It may be shitty but it will improve.
+1. It may be shitty but it will improve.(learning test is perfectly optimised)
