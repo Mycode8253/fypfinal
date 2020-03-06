@@ -29,8 +29,10 @@ Follow the steps to get the project running
 1. Install python if you dont have it ( from the official python website )
 1. Install Pillow
   1. pip install pillow
-  1. if pillow didnt install or if you get any "wheel blah blah ...." error then you can install from this website https://www.lfd.uci.edu/~gohlke/pythonlibs/#pillow 
-  1. Google it in online u will get in online mostly a youtube when u search it.
+  1. if pillow didnt install or if you get any "wheel blah blah ...." error then you can install from this website https://www.lfd.uci.edu/~gohlke/pythonlibs/#pillow -  this file is already their in the resources folder so.........
+  1. If i find the file in the resources then do "pip install .\resources\PyAudio-0.2.11-cp38-cp38-win_amd64.whl" make sure to be in the project directory in the command line prompt.
+  1. If it didnt work out then Google it in online u will get in online mostly a youtube when u search it.
+  
 1. pip install SpeechRecognition 
 1. Then open the command prompt in the directory where y unzipped it 
 1. Make sure the the commad prompt is in project directory when u do the command "dir" in command prompt u should all the files of the project.
