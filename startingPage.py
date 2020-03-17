@@ -1,6 +1,7 @@
 import tkinter as tk
 import Image_test_Dyslexia
 import learningtest 
+import phenomeSeg
 
 class MainWindow(tk.Tk):
     def __init__(self):
@@ -31,8 +32,8 @@ class StartPage(tk.Frame):
             self,
             text="Image Test",
             font=('Calibre',14,"italic"),
-            command = lambda : master.switchFrame(Image_test_Dyslexia.ImageTestDyslexia)
-    
+            command = lambda : master.switchFrame(Image_test_Dyslexia.ImageTestDyslexia),
+            relief = 'ridge'
             ).grid(
                 row = 2,
                 column =0,
@@ -48,8 +49,24 @@ class StartPage(tk.Frame):
                 row=2,
                 column = 2,
                 ipadx =2,
+                ipady =2, 
 
             )
+        
+        
+        tk.Button(
+            self,
+            text="Phenome Segmentation\n Test",
+            font=('Calibre',14,'italic'),
+            command = lambda : master.switchFrame(phenomeSeg.PhenomeSegmentation),
+            relief = 'groove'
+            ).grid(
+                row=2,
+                column = 4,
+                ipadx =2,
+                ipady =2,
+            )
+        
 
 
 

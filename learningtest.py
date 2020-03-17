@@ -26,12 +26,8 @@ class LearningTest(tk.Frame):
         threading.Thread(target=self.instructionThread,args=(),daemon=True).start()
 
 
-  
-        
-
     def createRandomNumber(self):
       random_letter =  random.choice(self.letters)  # generates a random letter from the given list of letters
-     
       return random_letter
 
 
@@ -40,22 +36,8 @@ class LearningTest(tk.Frame):
       
         self.instruction_label.grid(row=1,column=2,pady=2)
         self.letter_label.grid(row=2,column=2,pady=2)
-        
         self.progress_bar_determinate.grid(row=4,column=2)
 
-
-
-
-      
-    def barThread(self,value,complete_flag):
-      if  value!=100 or (not complete_flag):
-        self.progress_bar_determinate['value']= value
-        self.update_idletasks()
-      else:
-        print("i am removed###########")
-        self.progress_bar_determinate.grid_forget()
-      
-      
 
     def startThread(self):
       tag="startThread:"
@@ -77,14 +59,8 @@ class LearningTest(tk.Frame):
           self.barThread(bar_level+10,False)
           #self.lock.release()
           time.sleep(5)  
+    
       
-
-
-
-
-
-
-
     def instructionThread(self,*awrgs,**kwargs):
       tag = "instructionThread:"
       print(tag +" i am called ")
