@@ -37,7 +37,17 @@ class LearningTest(tk.Frame):
         self.instruction_label.grid(row=1,column=2,pady=2)
         self.letter_label.grid(row=2,column=2,pady=2)
         self.progress_bar_determinate.grid(row=4,column=2)
-
+        
+        
+        
+    def barThread(self,value,complete_flag):
+      if  value!=100 or (not complete_flag):
+        self.progress_bar_determinate['value']= value
+        self.update_idletasks()
+      else:
+        print("i am removed###########")
+        self.progress_bar_determinate.grid_forget()
+        
 
     def startThread(self):
       tag="startThread:"
