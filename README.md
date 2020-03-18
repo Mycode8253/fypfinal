@@ -40,3 +40,9 @@ Follow the steps to get the project running
 1. when "speak' comes on command prompt try to speak out what ever letter comes on the UI or any picture name like "boat" "windmill" "boat "
 "computer"
 1. It may be shitty but it will improve.(learning test is perfectly optimised)
+
+# File descriptions
+1. 'learningtest.py' - Letter fluency test
+1. 'Image_test_Dyslexia.py'  - Initial fluency test
+1. 'phenome####.py' - still not ready ppl
+> Please try to create another test some how using python if u can do the GUI using tkinter and send me the code because i have to do other modifications like adding few stuff that is going to take time so if you want to get it done fast do the third test with GUI preferably and send the code to me 
