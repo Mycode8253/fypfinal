@@ -1,6 +1,6 @@
 # Introduction
 Hey group mates 
-> This is a final year project git repository that I haved created with so much difficulty 
+> This is a final year project git repository that I have created with so much difficulty 
 
 * If you want to add any features to the final year project (like if u have modified any thing to the code then make changes visible by using git pull(i will explain you this in seperate files)
 * I will be giving you the details of how to set up git hub and what does this all mean
