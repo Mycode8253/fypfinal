@@ -29,11 +29,16 @@ class ImageTestDyslexia(tk.Frame):
         self.done_Timer_Flag=False
         self.image_sounds_dict ={}
         self.lock = threading.Lock()
+        self.answered_flag = True
+        self.crct_answered = False
+        self.total_questions = False
+        self.button_list=[]
         
         self.createWindow()
 
     # processing function
     def initRecognition(self, word, *args, **kwargs):
+        audio_flag=True
         r = sr.Recognizer()
         mic = sr.Microphone()
         print("speak")
@@ -41,23 +46,35 @@ class ImageTestDyslexia(tk.Frame):
             try:
                 r.adjust_for_ambient_noise(source)
                 audio = r.listen(source, timeout=5)
+                
             except sr.WaitTimeoutError:
+                audio_flag=False
                 tk.messagebox.showinfo(
                     'Message', "You didnt speak anything please speak again")
                 
                 
+        if audio_flag:
+            try:
+                recognisedPhrase = r.recognize_google(audio)
+                if recognisedPhrase == word:
+                    self.init_result = True
+                    print('true')
+                else:
+                    self.init_result = False
+                    print('False')
+            except sr.UnknownValueError:
+                tk.messagebox.showinfo(
+                    'Message', "What you spoke didnt make any sense try one more time ")
+            finally:
+                print(self.button_list)
+                for temp_btn in self.button_list:
+                    temp_btn.grid_forget()
+                    self.answered_flag=True
 
-        try:
-            recognisedPhrase = r.recognize_google(audio)
-            if recognisedPhrase == word:
-                self.init_result = True
-                print('true')
-            else:
-                self.init_result = False
-                print('False')
-        except sr.UnknownValueError:
-            tk.messagebox.showinfo(
-                'Message', "What you spoke didnt make any sense try one more time ")
+
+                
+        
+
 
     # Interface creation function
 
@@ -127,33 +144,43 @@ class ImageTestDyslexia(tk.Frame):
             6:"If you want to repeat the instruction then we will if not lets start the test!",
 
         }
-        self.button = tk.Button(self, font=('Calibre', 10), text="Lets Start", relief='ridge', command=self.nextBtn)
-        self.button.grid(row=2, column=1)
+        button = tk.Button(self, font=('Calibre', 10), text="Next", relief='ridge', command=self.nextBtn)
+        button.grid(row=2, column=1)
         instruction_label_counter = 1
         while True:
             if self.nextFlag and instruction_label_counter<7:
                 self.Question['text'] = instruction_label_dic[instruction_label_counter]
+                if instruction_label_counter==6:
+                    button['text']="Lets Start!"
                 instruction_label_counter+=1
+                
                 self.nextFlag=False
             elif self.nextFlag and instruction_label_counter>6:
                 break
 
-
-
-
-
-        self.button.grid_forget()
+        button.grid_forget()
         image_string=[]
         threading.Thread(target=self.timerThread,args=(),daemon=True).start()
-        while not self.done_Timer_Flag:
-            for i in range(0, 4):
-                temp = random.choice(self.images_dic)
-                while temp in image_string:
-                    temp  = random.choice(self.images_dic)
-                image_string.append(temp) #randomly selected images basically a string 
-                im = Image.open(BASE_DIR+"\\tinkerpro\\img\\"+image_string[i]+".png").resize(SIZE,Image.ANTIALIAS)
-                photo = ImageTk.PhotoImage(im) 
-                image_list.append(photo)
-                tk.Button(self, image = photo,command = lambda: threading.Thread(target=self.initRecognition,args=(image_string[i]),daemon=True).start(),background='red').grid(row = 3 if(i>=2) else 4,column = (0 if((i%2)==0) else 1) +(i%2),ipadx=PADDING_IMAGE_X,ipady=PADDING_IMAGE_Y)
+        temp_variable_timer = False
+        while not temp_variable_timer:
+            self.lock.acquire()
+            temp_variable_timer = self.done_Timer_Flag
+            
+            self.lock.release()
+            if self.answered_flag:
+                print("Instructio thread"+"I am called")
+                for i in range(0, 4):
+                    temp = random.choice(self.images_dic)
+                    while temp in image_string:
+                        temp  = random.choice(self.images_dic)
+                    image_string.append(temp) #randomly selected images basically a string 
+                    im = Image.open(BASE_DIR+"\\tinkerpro\\img\\"+image_string[i]+".png").resize(SIZE,Image.ANTIALIAS)
+                    photo = ImageTk.PhotoImage(im) 
+                    image_list.append(photo)
+                    btn_temp  = tk.Button(self, image = photo,command = lambda: threading.Thread(target=self.initRecognition,args=(image_string[i]),daemon=True).start(),background='red')
+                    btn_temp.grid(row = 3 if(i>=2) else 4,column = (0 if((i%2)==0) else 1) +(i%2),ipadx=PADDING_IMAGE_X,ipady=PADDING_IMAGE_Y)
+                    self.button_list.append(btn_temp)
+                    self.answered_flag  = False
+                    print(btn_temp)
         print(image_string)
         self.Question['text'] = "Select the image which starts with the sound ...." 
