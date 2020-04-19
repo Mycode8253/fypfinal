@@ -9,7 +9,7 @@ Hey group mates
 > First if u clone (download) this project .....then do it the normal way( I meant green button over top which downloads the zip folder ) but it  is not much helpful if you want to add back yours changes (if you made any changes to code ) directly to main project.
 But for seeing how the test is working you can download and run it.
 What ever changes i make to the project will be reflected in this git repository from time to time. So you can keep up with it.
-## HAPPY DOOPY
+
 
 
 
@@ -30,8 +30,8 @@ Follow the steps to get the project running
 1. Install Pillow
   1. pip install pillow
   1. if pillow didnt install or if you get any "wheel blah blah ...." error then you can install from this website https://www.lfd.uci.edu/~gohlke/pythonlibs/#pillow -  this file is already their in the resources folder so.........
-  1. If i find the file in the resources then do "pip install .\resources\PyAudio-0.2.11-cp38-cp38-win_amd64.whl" make sure to be in the project directory in the command line prompt.
-  1. If it didnt work out then Google it in online u will get in online mostly a youtube when u search it.
+  1. If you find the file in the resources then do "pip install .\resources\PyAudio-0.2.11-cp38-cp38-win_amd64.whl" make sure to be in the project directory in the command line prompt.
+  1. If it didnt work out then Google it in online u will get in online mostly on youtube when u search it.
   
 1. pip install SpeechRecognition 
 1. Then open the command prompt in the directory where y unzipped it 
