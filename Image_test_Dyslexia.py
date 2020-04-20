@@ -6,6 +6,8 @@ import time
 import tkinter as tk
 import tkinter.ttk as ttk
 import random
+import startingPage
+import learningtest
 
 SIZE = (250, 250)
 PADDING_IMAGE_X = 10
@@ -15,13 +17,14 @@ image_list = []
 image_list_other= []
 image_list_second=[]
 
-
 class ImageTestDyslexia(tk.Frame):
-    def __init__(self, master):
+    def __init__(self, master,*awrgs,**kwargs):
         tk.Frame.__init__(self, master,bg = '#5CC7B2')
+   
         self.Question = tk.Label(self, font=('Times', '20', 'normal'), text="",bg = '#5CC7B2')
         tk.Label(self, font=('Times',24,'normal'), text="Initial Sound Fluency Test",bg = '#5CC7B2').grid(
             row=0, column=1)
+        self.app = awrgs[0]
         self.instruction_label_counter=1
         self.init_result = False
         self.nextFlag = True
@@ -31,8 +34,8 @@ class ImageTestDyslexia(tk.Frame):
         self.image_sounds_dict ={}
         self.lock = threading.Lock()
         self.answered_flag = True
-        self.crct_answered = False
-        self.total_questions = False
+        self.crct_answered = 0
+        self.total_questions = 0
         self.button_list=[]
         self.button_list_second=[]
         self.image_string=[]
@@ -57,14 +60,13 @@ class ImageTestDyslexia(tk.Frame):
                     exit()
                 tk.messagebox.showinfo(
                     'Message', "You didnt speak anything please speak again")
-                    
-                
-                
+
         if audio_flag:
             try:
                 recognisedPhrase = r.recognize_google(audio)
                 if recognisedPhrase == word:
                     self.init_result = True
+                    self.crct_answered+=1
                     print('true')
                 else:
                     self.init_result = False
@@ -154,7 +156,7 @@ class ImageTestDyslexia(tk.Frame):
       self.done_Timer_Flag = True
       self.lock.release()
       print(tag+"I am ending master test should also end ......")
-    
+
 
     def instructionThread(self, *args, **kwargs):
         tag="Instruction Thread" #it is an variable fot debugging
@@ -241,9 +243,10 @@ class ImageTestDyslexia(tk.Frame):
         threading.Thread(target=self.timerThread,args=(),daemon=True).start()
         temp_variable_timer = False
         while not temp_variable_timer:
-            
+
             if self.answered_flag:
                 print(tag+"I am called")
+
                 for i in range(0, 4):
                     temp = random.choice(self.images_dic)
                     while temp in  self.image_string:
@@ -261,7 +264,9 @@ class ImageTestDyslexia(tk.Frame):
 
             
             self.lock.acquire()
+            self.total_questions +=1
             temp_variable_timer = self.done_Timer_Flag
             self.lock.release()
         print(self.image_string)
         self.Question['text'] = "Select the image which starts with the sound ...." 
+        self.app.switchFrame(learningtest.LearningTest,self.app)

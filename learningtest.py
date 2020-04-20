@@ -6,10 +6,13 @@ import random
 import time
 import threading
 import speech_recognition as sr
+import startingPage
+
 
 class LearningTest(tk.Frame):
-    def __init__(self, master):
-        tk.Frame.__init__(self, master)
+    def __init__(self, master,*awrgs,**kwargs):
+        tk.Frame.__init__(self, master,bg = '#5CC7B2')
+        self.app = awrgs[0]
         self.lock = threading.Lock()
         #tk.Frame.configure(self,bg='blue')
         self.letters =   st.ascii_letters           # returns a list of asci letters from a to z or 'A' to 'Z' 

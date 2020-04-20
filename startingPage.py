@@ -4,11 +4,13 @@ from PIL import Image, ImageTk
 import learningtest 
 import os
 import phenomeSeg
-app = None
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
 SIZE = (300, 300)
 img_str=[]
-
+number =1
+global app
+app=[]
 class MainWindow(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
@@ -20,15 +22,16 @@ class MainWindow(tk.Tk):
         
     
 
-    def switchFrame(self, frame_class):
-        new_frame = frame_class(self)
+    def switchFrame(self, frame_class,*awrgs,**kwargs):
+        
+        new_frame = frame_class(self,app)
         if self.frame is not None:
             self.frame.destroy()
         self.frame = new_frame
         self.frame.pack()
     
 class StartPage(tk.Frame):
-    def __init__(self, master):
+    def __init__(self, master,strh):
         tk.Frame.__init__(self,master)
         tk.Frame.configure(self,bg="#5CC7B2")
      
@@ -108,6 +111,7 @@ class StartPage(tk.Frame):
 
     
     def nextBtnFunction(self,e):
+   
         if e.get()!="":
             app.switchFrame(Image_test_Dyslexia.ImageTestDyslexia)
         else:
@@ -175,6 +179,7 @@ def quitFullScreen(event):
 
 
 if __name__ == "__main__":
+
     app = MainWindow()
     app.bind("<Escape>",quitFullScreen)
     
