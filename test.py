@@ -1,7 +1,10 @@
 import simpleaudio as sa
 
 
-filename = 'myfile.wav'
+filename = 'musicvideo.wav'
 wave_obj = sa.WaveObject.from_wave_file(filename)
 play_obj = wave_obj.play()
-play_obj.wait_done()  # Wait until sound has finished playing
+  # Wait until sound has finished playing
+for i in range (100000):
+    print(i)
+play_obj.stop()

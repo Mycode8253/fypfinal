@@ -13,6 +13,7 @@ PADDING_IMAGE_Y = 10
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
 image_list = []
 image_list_other= []
+image_list_second=[]
 
 
 class ImageTestDyslexia(tk.Frame):
@@ -25,8 +26,7 @@ class ImageTestDyslexia(tk.Frame):
         self.init_result = False
         self.nextFlag = True
         self.images_dic = ['boat', 'car', 'computer', 'dog',
-                            'home', 'ramen', 'tree', 'windmill',
-                            'workspace']
+                            'home', 'cycle', 'tree', 'windmill','cat','fan','apple']
         self.done_Timer_Flag=False
         self.image_sounds_dict ={}
         self.lock = threading.Lock()
@@ -34,6 +34,7 @@ class ImageTestDyslexia(tk.Frame):
         self.crct_answered = False
         self.total_questions = False
         self.button_list=[]
+        self.button_list_second=[]
         self.image_string=[]
         
         self.createWindow()
@@ -78,7 +79,8 @@ class ImageTestDyslexia(tk.Frame):
                 self.answered_flag=True
                 self.button_list.clear()
                 self.image_string.clear()
-                
+
+
 
 
                 
@@ -126,6 +128,7 @@ class ImageTestDyslexia(tk.Frame):
     
 
     def nextBtn(self):
+        print("Next button flag invoker is called")
         self.nextFlag = True
     def repeatBtn(self,btn,nextbtn,instruction_label_dic_copy):
 
@@ -159,10 +162,11 @@ class ImageTestDyslexia(tk.Frame):
         instruction_label_dic = {
             1:"Hello welcome to the test Initial Fluency Test",
             2:"This test will go on for three minutes",
-            3:"We will be presenting you 4 pictures, we will names each picture",
+            3:"We will be presenting you 4 pictures, we will name each picture",
             4:"Then we will ask for the name of the picture that starts with the sound ###",
             5:"Then you should point to the picture or say it  orally",
             6:"If you want to repeat the instruction then we will if not lets start the test!",
+            
 
         }
         im_1_1 = Image.open(BASE_DIR+"\\tinkerpro\\img\\flame-page-under-construction.png")
@@ -188,8 +192,45 @@ class ImageTestDyslexia(tk.Frame):
                     button['text']="Lets Start!"
                     button.grid(row=3,column=0)
                     button_repeat.grid(row=3,column=2)
+                if self.instruction_label_counter==3:
+                    image_label.grid_forget()
+                    button.grid(row=4,column=1)
+                    for i in range(0, 4):
+                        temp = random.choice(self.images_dic)
+                        while temp in  self.image_string:
+                            temp  = random.choice(self.images_dic)
+                        self.image_string.append(temp) #randomly selected images basically a string 
+                        im = Image.open(BASE_DIR+"\\tinkerpro\\img\\"+self.image_string[i]+".png").resize(SIZE,Image.ANTIALIAS)
+                        photo = ImageTk.PhotoImage(im) 
+                        image_list_second.append(photo)
+                        btn_temp_second  = tk.Button(self, image = photo,borderwidth=10,command = lambda: threading.Thread(target=self.initRecognition,args=(self.image_string[i],True),daemon=True).start())
+                        btn_temp_second.grid(row = 3 if(i>=2) else 4,column = (0 if((i%2)==0) else 1) +(i%2),padx=PADDING_IMAGE_X,pady=PADDING_IMAGE_Y)
+                        print(btn_temp_second)
+                        print("C")
+                        self.button_list_second.append(btn_temp_second)
                     
-                self.instruction_label_counter+=1
+                    self.nextFlag = False
+                    count=0
+                    
+                    while True:
+                        if count!=4 and not self.nextFlag:
+                            self.button_list_second[count].configure(background='red')
+                            time.sleep(5)
+                            self.button_list_second[count].configure(background='white')
+                            count+=1
+                        else:
+                            for item in self.button_list_second:
+                                item.grid_forget()
+                            image_list_second.clear()
+                            self.button_list_second.clear()
+                            button.grid(row=3,column=1)
+                            image_label.grid(row=2,column=1)
+                            break
+                    
+                        
+                      
+
+                self.instruction_label_counter+=1 
                 
                 self.nextFlag=False
             elif self.nextFlag and self.instruction_label_counter>6:
@@ -205,13 +246,13 @@ class ImageTestDyslexia(tk.Frame):
                 print(tag+"I am called")
                 for i in range(0, 4):
                     temp = random.choice(self.images_dic)
-                    while temp in self.image_string:
+                    while temp in  self.image_string:
                         temp  = random.choice(self.images_dic)
                     self.image_string.append(temp) #randomly selected images basically a string 
                     im = Image.open(BASE_DIR+"\\tinkerpro\\img\\"+self.image_string[i]+".png").resize(SIZE,Image.ANTIALIAS)
                     photo = ImageTk.PhotoImage(im) 
                     image_list.append(photo)
-                    btn_temp  = tk.Button(self, image = photo,command = lambda: threading.Thread(target=self.initRecognition,args=(self.image_string[i],True),daemon=True).start(),background='red')
+                    btn_temp  = tk.Button(self, image = photo,borderwidth=10,command = lambda: threading.Thread(target=self.initRecognition,args=(self.image_string[i],True),daemon=True).start())
                     btn_temp.grid(row = 3 if(i>=2) else 4,column = (0 if((i%2)==0) else 1) +(i%2),padx=PADDING_IMAGE_X,pady=PADDING_IMAGE_Y)
                     self.button_list.append(btn_temp)
                     self.answered_flag  = False
