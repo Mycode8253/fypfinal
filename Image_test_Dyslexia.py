@@ -8,7 +8,7 @@ import tkinter.ttk as ttk
 import random
 import startingPage
 import learningtest
-
+TEST_DURATION = 3   #seconds genarally 3 minutes 
 SIZE = (250, 250)
 PADDING_IMAGE_X = 10
 PADDING_IMAGE_Y = 10
@@ -16,6 +16,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
 image_list = []
 image_list_other= []
 image_list_second=[]
+imageCorrectAnswers = 0
 
 class ImageTestDyslexia(tk.Frame):
     def __init__(self, master,*awrgs,**kwargs):
@@ -39,15 +40,19 @@ class ImageTestDyslexia(tk.Frame):
         self.button_list=[]
         self.button_list_second=[]
         self.image_string=[]
+        self.quick_instruction_label = tk.Label(self,font=('Times','18','normal'),text="",bg='#61F8D4')
+        self.selected_word =  None
         
         self.createWindow()
 
     # processing function
     def initRecognition(self, word,toggle, *args, **kwargs):
+        
         audio_flag=True
         r = sr.Recognizer()
         mic = sr.Microphone()
         print("speak")
+        self.quick_instruction_label['text'] = "Say it loud"
         with mic as source:
             try:
                 r.adjust_for_ambient_noise(source)
@@ -147,7 +152,7 @@ class ImageTestDyslexia(tk.Frame):
     def timerThread(self,*awrgs,**kwargs):
       tag="TimerThread"
       print(tag+ " I am called")
-      time_interval = 180
+      time_interval = TEST_DURATION
       self.lock.acquire()
       self.done_Timer_Flag = False
       self.lock.release()
@@ -207,8 +212,6 @@ class ImageTestDyslexia(tk.Frame):
                         image_list_second.append(photo)
                         btn_temp_second  = tk.Button(self, image = photo,borderwidth=10,command = lambda: threading.Thread(target=self.initRecognition,args=(self.image_string[i],True),daemon=True).start())
                         btn_temp_second.grid(row = 3 if(i>=2) else 4,column = (0 if((i%2)==0) else 1) +(i%2),padx=PADDING_IMAGE_X,pady=PADDING_IMAGE_Y)
-                        print(btn_temp_second)
-                        print("C")
                         self.button_list_second.append(btn_temp_second)
                     
                     self.nextFlag = False
@@ -242,6 +245,7 @@ class ImageTestDyslexia(tk.Frame):
         self.Question['text'] = "Select the picture that resembles a "
         threading.Thread(target=self.timerThread,args=(),daemon=True).start()
         temp_variable_timer = False
+        self.quick_instruction_label.grid(row=2,column=1)
         while not temp_variable_timer:
 
             if self.answered_flag:
@@ -260,7 +264,11 @@ class ImageTestDyslexia(tk.Frame):
                     self.button_list.append(btn_temp)
                     self.answered_flag  = False
                     print(btn_temp)
-
+                rand_temp = random.randint(0,3)
+                self.selected_word = self.image_string[rand_temp]
+                self.Question['text'] = "Select the image which starts with the sound ...." + self.selected_word
+                self.quick_instruction_label['text'] = "Select the image and say it loud that starts with the ### sound"
+                
 
             
             self.lock.acquire()
@@ -268,5 +276,9 @@ class ImageTestDyslexia(tk.Frame):
             temp_variable_timer = self.done_Timer_Flag
             self.lock.release()
         print(self.image_string)
-        self.Question['text'] = "Select the image which starts with the sound ...." 
+        print(self.crct_answered)
+        global imageCorrectAnswers
+        imageCorrectAnswers = 1
+        
+
         self.app.switchFrame(learningtest.LearningTest,self.app)

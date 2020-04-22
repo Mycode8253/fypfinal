@@ -1,28 +1,36 @@
 import  tkinter as tk
 import tkinter.ttk as ttk 
 from tkinter import messagebox
+from PIL import Image, ImageTk
 import string as st
 import random
 import time
 import threading
 import speech_recognition as sr
 import startingPage
+import os
+import evaluation
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
+
+image_list_other = []
+TIME_DURATION = 2
 
 
 class LearningTest(tk.Frame):
     def __init__(self, master,*awrgs,**kwargs):
-        tk.Frame.__init__(self, master,bg = '#5CC7B2')
+        tk.Frame.__init__(self, master,bg = '#120E4A')
         self.app = awrgs[0]
         self.lock = threading.Lock()
+        self.app.configure(background="#120E4A")
         #tk.Frame.configure(self,bg='blue')
         self.letters =   st.ascii_letters           # returns a list of asci letters from a to z or 'A' to 'Z' 
-        self.letter_label = tk.Label(self,text="",font=('Calibre',150))
-        self.instruction_label = tk.Label(self,text="Hey Hello!!",font=('Calibre',20))
+        self.letter_label = tk.Label(self,text="",font=('Times',150,'normal'),bg="#120E4A",fg='white')
+        self.instruction_label = tk.Label(self,text="Hey Hello!!",font=('Times',20,'bold'),fg='white',bg="#120E4A")
         #master.geometry("500x200")                  # change geometry height and widht(height x width)
         self.progress_bar_determinate = ttk.Progressbar(self,orient=tk.HORIZONTAL,length=100, mode='determinate')
-        self.progress_bar_indeterminate = ttk.Progressbar(self,orient=tk.HORIZONTAL,length=100, mode='indeterminate')
         self.start_button = tk.Button(self,text="Start the Test",command= self.startThread)
-        self.process_running_label = tk.Label(self,text="",font=('Calibre',20))
+        self.process_running_label = tk.Label(self,text="",font=('Times',20,'normal'),bg="#120E4A",fg='white')
         self.start  = False
         self.repeat =False
         self.complete_flag = True
@@ -32,6 +40,10 @@ class LearningTest(tk.Frame):
         self.repeat_Btn = tk.Button(self,text="Repeat the instruction",command=self.repeatFunc,)
         self.createWindow()
         self.done_Timer_Flag = False
+        self.image_label = None
+        
+        
+        
         threading.Thread(target=self.instructionThread,args=(),daemon=True).start()
 
 
@@ -41,11 +53,14 @@ class LearningTest(tk.Frame):
 
 
     def createWindow(self):
-        tk.Label(self,text="Learning Fluency Test",font=('Calibre',20)).grid(row=0,column=2,ipady=2,ipadx=2,sticky=tk.N)
-      
+        tk.Label(self,text="Learning Fluency Test",font=('Times',24,'bold'),bg="#120E4A",fg="white").grid(row=0,column=2,ipady=2,ipadx=2,sticky=tk.N)
+
         self.instruction_label.grid(row=1,column=2,pady=2)
-        self.letter_label.grid(row=2,column=2,pady=2)
-        self.progress_bar_determinate.grid(row=4,column=2)
+
+
+     
+        
+        
         
         
         
@@ -89,7 +104,7 @@ class LearningTest(tk.Frame):
     def timerThread(self,*awrgs,**kwargs):
       tag="TimerThread"
       print(tag+ " I am called")
-      time_interval = 60
+      time_interval = TIME_DURATION
       self.lock.acquire()
       self.done_Timer_Flag = False
       self.lock.release()
@@ -101,6 +116,7 @@ class LearningTest(tk.Frame):
 
 
     def instructionThread(self,*awrgs,**kwargs):
+     
       tag = "instructionThread:"
       print(tag +" i am called ")
       instruction_word_dic = {
@@ -115,6 +131,19 @@ class LearningTest(tk.Frame):
       temp_int_counter =1
       self.repeat=False
       self.start_button.grid(row=3,column=2,pady=2)
+         
+      im_1_1 = Image.open(BASE_DIR+"\\tinkerpro\\img\\learningtestWelcomePage.png")
+      im_1_1 = im_1_1.resize((600,400),Image.ANTIALIAS)
+      image_list_other.append(ImageTk.PhotoImage(im_1_1))
+      self.image_label = tk.Label(self,
+            image = image_list_other[0],
+            bg="#120E4A",)
+            
+
+      self.image_label.grid(
+            row=2,
+            column=2
+        )
 
       while(True):
         if self.next_flag and temp_int_counter<=6:
@@ -124,7 +153,6 @@ class LearningTest(tk.Frame):
           if(temp_int_counter==6):
             self.start_button['text'] = "Start!"
             self.repeat_Btn.grid(row=4,column=2,pady=2)
-
           temp_int_counter +=1
         
         elif self.repeat:
@@ -136,15 +164,16 @@ class LearningTest(tk.Frame):
         elif self.next_flag and temp_int_counter>6:
           self.repeat_Btn.grid_forget()
           break
-
+      self.image_label.grid_forget()
       self.process_running_label.grid(row=4,column=2)
+      
       while(True):
         if self.start:
           self.start_button.grid_forget()
           self.progress_bar_determinate.grid(row=5,column=2,pady=2)
           self.barThread(0,False)
           break
-        
+      self.letter_label.grid(row=3,column=2,pady=2)
       self.instruction_label['text'] = "Here they come"
       count=False
       threading.Thread(target=self.timerThread,args=(),daemon=True).start()
@@ -166,6 +195,8 @@ class LearningTest(tk.Frame):
       self.instruction_label['text'] = "done with the test"
       print(tag+"I am going down")
       print(tag+"Total asked : "+str(self.total_letter_counter)+"crct words: "+str (self.crct_letter_counter))
+      self.app.switchFrame(evaluation.Evaluation,self.app)
+
 
 
 
