@@ -2,14 +2,7 @@
 Hey group mates 
 > This is a final year project git repository that I have created with so much difficulty 
 
-* If you want to add any features to the final year project (like if u have modified any thing to the code then make changes visible by using git pull(i will explain you this in seperate files)
-* I will be giving you the details of how to set up git hub and what does this all mean
-* if you want to contribute  you can read the git manual which i will be including or you read online how to use git.
-* Happy if i get help :-)  
-> First if u clone (download) this project .....then do it the normal way( I meant green button over top which downloads the zip folder ) but it  is not much helpful if you want to add back yours changes (if you made any changes to code ) directly to main project.
-But for seeing how the test is working you can download and run it.
-What ever changes i make to the project will be reflected in this git repository from time to time. So you can keep up with it.
-
+* If you want to add any features to the final year project then do it.
 
 
 
