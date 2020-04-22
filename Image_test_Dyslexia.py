@@ -8,6 +8,8 @@ import tkinter.ttk as ttk
 import random
 import startingPage
 import learningtest
+
+
 TEST_DURATION = 3   #seconds genarally 3 minutes 
 SIZE = (250, 250)
 PADDING_IMAGE_X = 10

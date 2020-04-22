@@ -10,11 +10,12 @@ import speech_recognition as sr
 import startingPage
 import os
 import evaluation
+import wordusefluency
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
 
 image_list_other = []
-TIME_DURATION = 2
+TIME_DURATION = 3 # generally 60 seconds
 
 
 class LearningTest(tk.Frame):
@@ -175,6 +176,8 @@ class LearningTest(tk.Frame):
           break
       self.letter_label.grid(row=3,column=2,pady=2)
       self.instruction_label['text'] = "Here they come"
+      self.app.switchFrame(wordusefluency.WordUseFluency,self.app)
+      exit()#############################################################################
       count=False
       threading.Thread(target=self.timerThread,args=(),daemon=True).start()
       while(True):
@@ -195,7 +198,7 @@ class LearningTest(tk.Frame):
       self.instruction_label['text'] = "done with the test"
       print(tag+"I am going down")
       print(tag+"Total asked : "+str(self.total_letter_counter)+"crct words: "+str (self.crct_letter_counter))
-      self.app.switchFrame(evaluation.Evaluation,self.app)
+      
 
 
 

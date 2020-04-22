@@ -3,7 +3,7 @@ import Image_test_Dyslexia
 from PIL import Image, ImageTk
 import learningtest 
 import os
-import phenomeSeg
+import wordusefluency
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
 SIZE = (300, 300)
@@ -113,7 +113,7 @@ class StartPage(tk.Frame):
     def nextBtnFunction(self,e):
    
         if e.get()!="":
-            app.switchFrame(Image_test_Dyslexia.ImageTestDyslexia)
+            app.switchFrame(wordusefluency.WordUseFluency)
         else:
                  tk.Label(
             self,
