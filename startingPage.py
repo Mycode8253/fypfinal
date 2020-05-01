@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import learningtest 
 import os
 import wordusefluency
+import evaluation
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
 SIZE = (300, 300)
@@ -113,7 +114,7 @@ class StartPage(tk.Frame):
     def nextBtnFunction(self,e):
    
         if e.get()!="":
-            app.switchFrame(wordusefluency.WordUseFluency)
+            app.switchFrame(evaluation.Evaluation)
         else:
                  tk.Label(
             self,

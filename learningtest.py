@@ -11,12 +11,16 @@ import startingPage
 import os
 import evaluation
 import wordusefluency
+from gtts import gTTS
+from playsound import playsound
+language = 'en'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
 
 image_list_other = []
-TIME_DURATION = 3 # generally 60 seconds
-
+TIME_DURATION = 60 # generally 60 seconds
+totalquestions = 0
+crctquestion =0 
 
 class LearningTest(tk.Frame):
     def __init__(self, master,*awrgs,**kwargs):
@@ -33,6 +37,7 @@ class LearningTest(tk.Frame):
         self.start_button = tk.Button(self,text="Start the Test",command= self.startThread)
         self.process_running_label = tk.Label(self,text="",font=('Times',20,'normal'),bg="#120E4A",fg='white')
         self.start  = False
+        self.RECORDINGCOUNT = 0
         self.repeat =False
         self.complete_flag = True
         self.next_flag = True
@@ -123,7 +128,7 @@ class LearningTest(tk.Frame):
       instruction_word_dic = {
           1:"Welcome to the test..",
           2:"Here are the instructions to follow it out",
-          3:"Here are some letters that keeps on coming in this fashion",
+          3:"You will be getting letters slowly one by one for a period of time ",
           4:"You should be telling it loud, what is that letter ",
           5:"You will be given 5 seconds to speak out the letter",
           6:"it keeps on going like that \n if you want to repeat again the instructions click on repeat again \n if not lets start!",
@@ -145,10 +150,15 @@ class LearningTest(tk.Frame):
             row=2,
             column=2
         )
-
+      path=BASE_DIR+"\\tinkerpro\\recordlearningtest"
       while(True):
         if self.next_flag and temp_int_counter<=6:
           self.instruction_label['text'] = instruction_word_dic[temp_int_counter]
+          myobj = gTTS(text=self.instruction_label['text'], lang=language, slow=False,) 
+          myobj.save("recordlearningtest"+str(self.RECORDINGCOUNT)+".mp3")
+          playsound("recordlearningtest"+str(self.RECORDINGCOUNT)+".mp3")
+          os.remove(path+str(self.RECORDINGCOUNT)+".mp3")
+          self.RECORDINGCOUNT+=1
           self.start_button['text']='Next ->'
           self.next_flag=False
           if(temp_int_counter==6):
@@ -176,8 +186,8 @@ class LearningTest(tk.Frame):
           break
       self.letter_label.grid(row=3,column=2,pady=2)
       self.instruction_label['text'] = "Here they come"
-      self.app.switchFrame(wordusefluency.WordUseFluency,self.app)
-      exit()#############################################################################
+      
+      
       count=False
       threading.Thread(target=self.timerThread,args=(),daemon=True).start()
       while(True):
@@ -198,6 +208,11 @@ class LearningTest(tk.Frame):
       self.instruction_label['text'] = "done with the test"
       print(tag+"I am going down")
       print(tag+"Total asked : "+str(self.total_letter_counter)+"crct words: "+str (self.crct_letter_counter))
+      global crctquestion
+      global totalquestions
+      crctquestion = self.crct_letter_counter
+      totalquestions = self.total_letter_counter
+      self.app.switchFrame(wordusefluency.WordUseFluency,self.app)
       
 
 
@@ -216,13 +231,14 @@ class LearningTest(tk.Frame):
         self.process_running_label['text'] = "Speak I am Listening...."
         with mic as source:
             try:              
-                r.adjust_for_ambient_noise(source,duration=  0.1)
+                r.adjust_for_ambient_noise(source,duration= 0.8)
                 audio = r.listen(source, timeout=5,)
                 self.barThread(50,False)
                 
             except sr.WaitTimeoutError:
                 #messagebox.showinfo('Message',"You didnt speak anything please speak again")
                 self.instruction_label['text'] = "You didnt speak anything please speak again" #instead of the instruction label you should be getting the voice overs made by priya or someone 
+                
                 if trail_counter!=2:
                   threading.Thread(target=self.initRecognition,args=(word),daemon=True).start()
                   exit()
@@ -235,7 +251,7 @@ class LearningTest(tk.Frame):
           self.process_running_label['text'] = "Processing....Be patient"
           recognisedPhrase= r.recognize_google(audio)
           print(recognisedPhrase)
-          if recognisedPhrase == word.lower():
+          if recognisedPhrase.lower() == word.lower():
               print(True)
               self.crct_letter_counter+=1
           else:

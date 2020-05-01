@@ -8,9 +8,12 @@ import tkinter.ttk as ttk
 import random
 import startingPage
 import learningtest
+from gtts import gTTS 
+from playsound import playsound
+language = 'en'
 
 
-TEST_DURATION = 3   #seconds genarally 3 minutes 
+TEST_DURATION = 180  #seconds genarally 3 minutes 
 SIZE = (250, 250)
 PADDING_IMAGE_X = 10
 PADDING_IMAGE_Y = 10
@@ -19,6 +22,7 @@ image_list = []
 image_list_other= []
 image_list_second=[]
 imageCorrectAnswers = 0
+totalImageAnswers = 0
 
 class ImageTestDyslexia(tk.Frame):
     def __init__(self, master,*awrgs,**kwargs):
@@ -27,6 +31,7 @@ class ImageTestDyslexia(tk.Frame):
         self.Question = tk.Label(self, font=('Times', '20', 'normal'), text="",bg = '#5CC7B2')
         tk.Label(self, font=('Times',24,'normal'), text="Initial Sound Fluency Test",bg = '#5CC7B2').grid(
             row=0, column=1)
+        self.RECORDINGCOUNT = 0
         self.app = awrgs[0]
         self.instruction_label_counter=1
         self.init_result = False
@@ -44,7 +49,7 @@ class ImageTestDyslexia(tk.Frame):
         self.image_string=[]
         self.quick_instruction_label = tk.Label(self,font=('Times','18','normal'),text="",bg='#61F8D4')
         self.selected_word =  None
-        
+        self.speaker_label = None
         self.createWindow()
 
     # processing function
@@ -54,7 +59,7 @@ class ImageTestDyslexia(tk.Frame):
         r = sr.Recognizer()
         mic = sr.Microphone()
         print("speak")
-        self.quick_instruction_label['text'] = "Say it loud"
+        self.quick_instruction_label['text'] = "Say it loud I am listening"
         with mic as source:
             try:
                 r.adjust_for_ambient_noise(source)
@@ -70,10 +75,16 @@ class ImageTestDyslexia(tk.Frame):
 
         if audio_flag:
             try:
+                self.quick_instruction_label['text'] = "Processing....."
                 recognisedPhrase = r.recognize_google(audio)
+                print(recognisedPhrase)
                 if recognisedPhrase == word:
                     self.init_result = True
-                    self.crct_answered+=1
+                    if(self.selected_word==word):
+                        self.crct_answered+=1
+                    else:
+                        self.crct_answered+=0.5
+
                     print('true')
                 else:
                     self.init_result = False
@@ -82,6 +93,7 @@ class ImageTestDyslexia(tk.Frame):
                 tk.messagebox.showinfo(
                     'Message', "What you spoke didnt make any sense try one more time ")
             finally:
+                self.quick_instruction_label['text'] = "Almost done!!!"
                 print(self.button_list)
                 for temp_btn in self.button_list:
                     temp_btn.grid_forget()
@@ -101,8 +113,13 @@ class ImageTestDyslexia(tk.Frame):
     def createWindow(self):
         self.Question.grid(row=1, column=1, sticky=tk.W, padx=15, pady=20)
         self.Question['text'] = "Hey welcome to the test if you are ready then lets start the test....."
+
         threading.Thread(target=self.instructionThread,args=(),daemon=True).start()
-        
+        # im_1 = Image.open(BASE_DIR+"\\tinkerpro\\img\\speaker.png")
+        # im_1 = im_1.resize(SIZE,Image.ANTIALIAS)
+        # photo_speaker = ImageTk.PhotoImage(im_1)
+        # self.speaker_label = tk.Label(self,image= photo_speaker,)
+        # self.speaker_label.grid(row=1,column=2,sticky=tk.W)         
         # GUI decoration code will come here just to make the whole thing to look pretty  
         '''
         im_1 = Image.open(BASE_DIR+"\\tinkerpro\\img\\boat.png")
@@ -172,7 +189,7 @@ class ImageTestDyslexia(tk.Frame):
             1:"Hello welcome to the test Initial Fluency Test",
             2:"This test will go on for three minutes",
             3:"We will be presenting you 4 pictures, we will name each picture",
-            4:"Then we will ask for the name of the picture that starts with the sound ###",
+            4:"Then we will ask for the name of the picture that starts with the sound ",
             5:"Then you should point to the picture or say it  orally",
             6:"If you want to repeat the instruction then we will if not lets start the test!",
             
@@ -193,10 +210,26 @@ class ImageTestDyslexia(tk.Frame):
         button = tk.Button(self, font=('Times', 15), text="Next", relief='ridge', command=self.nextBtn)
         button_repeat = tk.Button(self, font=('Times', 15), text="Repeat", relief='ridge', command=lambda: self.repeatBtn(button_repeat,button,instruction_label_dic))
         button.grid(row=3, column=1)
+        path=BASE_DIR+"\\tinkerpro\\recording"
         self.instruction_label_counter=1
         while True:
             if self.nextFlag and self.instruction_label_counter<7:
+                print("I am inside the main bosidike")
+                
+                  
+                   
+ 
                 self.Question['text'] = instruction_label_dic[self.instruction_label_counter]
+                button['state'] = tk.DISABLED
+                myobj = gTTS(text=instruction_label_dic[self.instruction_label_counter], lang=language, slow=False,) 
+                myobj.save("recording"+str(self.RECORDINGCOUNT)+".mp3")
+                playsound("recording"+str(self.RECORDINGCOUNT)+".mp3")
+                os.remove(path+str(self.RECORDINGCOUNT)+".mp3")
+                self.RECORDINGCOUNT+=1
+                button['state'] = tk.NORMAL
+                
+                print(path)
+                
                 if self.instruction_label_counter==6:
                     button['text']="Lets Start!"
                     button.grid(row=3,column=0)
@@ -204,6 +237,8 @@ class ImageTestDyslexia(tk.Frame):
                 if self.instruction_label_counter==3:
                     image_label.grid_forget()
                     button.grid(row=4,column=1)
+                    temp_int_row = 3
+                    temp_int_column=-2
                     for i in range(0, 4):
                         temp = random.choice(self.images_dic)
                         while temp in  self.image_string:
@@ -213,7 +248,12 @@ class ImageTestDyslexia(tk.Frame):
                         photo = ImageTk.PhotoImage(im) 
                         image_list_second.append(photo)
                         btn_temp_second  = tk.Button(self, image = photo,borderwidth=10,command = lambda: threading.Thread(target=self.initRecognition,args=(self.image_string[i],True),daemon=True).start())
-                        btn_temp_second.grid(row = 3 if(i>=2) else 4,column = (0 if((i%2)==0) else 1) +(i%2),padx=PADDING_IMAGE_X,pady=PADDING_IMAGE_Y)
+                        if temp_int_column==2:
+                            temp_int_row=4
+                            temp_int_column = 0
+                        else:
+                            temp_int_column+=2
+                        btn_temp_second.grid(row = temp_int_row,column = temp_int_column,padx=PADDING_IMAGE_X,pady=PADDING_IMAGE_Y)
                         self.button_list_second.append(btn_temp_second)
                     
                     self.nextFlag = False
@@ -222,7 +262,12 @@ class ImageTestDyslexia(tk.Frame):
                     while True:
                         if count!=4 and not self.nextFlag:
                             self.button_list_second[count].configure(background='red')
-                            time.sleep(5)
+                            myobj = gTTS(text=self.image_string[count], lang=language, slow=False,) 
+                            myobj.save("recording"+str(self.RECORDINGCOUNT)+".mp3")
+                            playsound("recording"+str(self.RECORDINGCOUNT)+".mp3")
+                            os.remove(path+str(self.RECORDINGCOUNT)+".mp3")
+                            self.RECORDINGCOUNT+=1
+                            
                             self.button_list_second[count].configure(background='white')
                             count+=1
                         else:
@@ -239,6 +284,7 @@ class ImageTestDyslexia(tk.Frame):
 
                 self.instruction_label_counter+=1 
                 
+                
                 self.nextFlag=False
             elif self.nextFlag and self.instruction_label_counter>6:
                 break
@@ -252,8 +298,13 @@ class ImageTestDyslexia(tk.Frame):
 
             if self.answered_flag:
                 print(tag+"I am called")
-
+                temp_int_row = 3
+                temp_int_column=-2
+                self.quick_instruction_label['text']="Listen Carefully .."
+                self.button_list.clear()
+                self.image_string.clear()
                 for i in range(0, 4):
+                    
                     temp = random.choice(self.images_dic)
                     while temp in  self.image_string:
                         temp  = random.choice(self.images_dic)
@@ -261,15 +312,34 @@ class ImageTestDyslexia(tk.Frame):
                     im = Image.open(BASE_DIR+"\\tinkerpro\\img\\"+self.image_string[i]+".png").resize(SIZE,Image.ANTIALIAS)
                     photo = ImageTk.PhotoImage(im) 
                     image_list.append(photo)
-                    btn_temp  = tk.Button(self, image = photo,borderwidth=10,command = lambda: threading.Thread(target=self.initRecognition,args=(self.image_string[i],True),daemon=True).start())
-                    btn_temp.grid(row = 3 if(i>=2) else 4,column = (0 if((i%2)==0) else 1) +(i%2),padx=PADDING_IMAGE_X,pady=PADDING_IMAGE_Y)
+                    if temp_int_column==2:
+                        temp_int_row=4
+                        temp_int_column = 0
+                    else:
+                        temp_int_column+=2
+                    btn_temp  = tk.Button(self, image = photo,borderwidth=20,command = lambda: threading.Thread(target=self.initRecognition,args=(self.image_string[i],True),daemon=True).start())
+                    btn_temp.grid(row = temp_int_row,column = temp_int_column,padx=PADDING_IMAGE_X,pady=PADDING_IMAGE_Y)
                     self.button_list.append(btn_temp)
                     self.answered_flag  = False
                     print(btn_temp)
                 rand_temp = random.randint(0,3)
+                for count in range(0,4):
+                    self.button_list[count].configure(background='red')
+                    myobj = gTTS(text=self.image_string[count], lang=language, slow=False,) 
+                    myobj.save("recording"+str(self.RECORDINGCOUNT)+".mp3")
+                    playsound("recording"+str(self.RECORDINGCOUNT)+".mp3")
+                    os.remove(path+str(self.RECORDINGCOUNT)+".mp3")
+                    self.RECORDINGCOUNT+=1
+                            
+                    self.button_list[count].configure(background='white')
+                
+
+                
                 self.selected_word = self.image_string[rand_temp]
-                self.Question['text'] = "Select the image which starts with the sound ...." + self.selected_word
-                self.quick_instruction_label['text'] = "Select the image and say it loud that starts with the ### sound"
+                self.Question['text'] = "Select the image which starts with the sound ...." + "//"+self.selected_word[:2]+"//"
+                self.quick_instruction_label['text'] = "Select the image and say it loud that starts with "+"//"+self.selected_word[:2]+"//" + " sound"
+               
+               
                 
 
             
@@ -280,7 +350,9 @@ class ImageTestDyslexia(tk.Frame):
         print(self.image_string)
         print(self.crct_answered)
         global imageCorrectAnswers
-        imageCorrectAnswers = 1
+        global totalImageAnswers
+        imageCorrectAnswers = self.crct_answered
+        totalImageAnswers = self.total_questions
         
 
         self.app.switchFrame(learningtest.LearningTest,self.app)
