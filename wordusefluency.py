@@ -31,8 +31,9 @@ class WordUseFluency(tk.Frame):
         self.instruction_label = tk.Label(self, font=('Times', '20', 'normal'),bg="#3E8188",fg="white", text="Hey Hello! you came so far...",)
         self.instruction_label.grid(row=1,column=1,pady=5)
         self.helper_label = None
-        self.app=args[0]
-        self.app.configure(bg="#3E8188")
+        self.app=list(args)
+        print(args)
+        self.app[0].configure(bg="#3E8188")
         #Helpfull variables
         self.instruction_dict = {
             1:"Hey welcome to the test ",
@@ -125,6 +126,7 @@ class WordUseFluency(tk.Frame):
             
 
     def instructionThread(self):
+        
         tag="Instruction Thread: "
         toggle_repeat= True
         print(self.helper_label.winfo_exists())
@@ -251,7 +253,8 @@ class WordUseFluency(tk.Frame):
             global crctquestions
             totalquestions =self.total_questions
             crctquestions = self.crct_questions
-            self.app.switchFrame(evaluation.Evaluation,self.app)
+            self.app.append(self)
+            self.app[0].switchFrame(evaluation.Evaluation,self.app[1:])
                                  
         self.change_label=True
  

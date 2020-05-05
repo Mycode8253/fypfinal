@@ -25,14 +25,14 @@ class MainWindow(tk.Tk):
 
     def switchFrame(self, frame_class,*awrgs,**kwargs):
         
-        new_frame = frame_class(self,app)
+        new_frame = frame_class(self,app,awrgs)
         if self.frame is not None:
             self.frame.destroy()
         self.frame = new_frame
         self.frame.pack()
     
 class StartPage(tk.Frame):
-    def __init__(self, master,strh):
+    def __init__(self, master,*arwgs,**kwargs):
         tk.Frame.__init__(self,master)
         tk.Frame.configure(self,bg="#5CC7B2")
      
@@ -114,7 +114,7 @@ class StartPage(tk.Frame):
     def nextBtnFunction(self,e):
    
         if e.get()!="":
-            app.switchFrame(evaluation.Evaluation)
+            app.switchFrame(Image_test_Dyslexia.ImageTestDyslexia)
         else:
                  tk.Label(
             self,

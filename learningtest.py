@@ -19,15 +19,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
 
 image_list_other = []
 TIME_DURATION = 60 # generally 60 seconds
+global totalquestions 
 totalquestions = 0
 crctquestion =0 
 
 class LearningTest(tk.Frame):
     def __init__(self, master,*awrgs,**kwargs):
         tk.Frame.__init__(self, master,bg = '#120E4A')
-        self.app = awrgs[0]
+        self.app = list(awrgs)
+        print(self.app)
         self.lock = threading.Lock()
-        self.app.configure(background="#120E4A")
+        self.app[0].configure(background="#120E4A")
         #tk.Frame.configure(self,bg='blue')
         self.letters =   st.ascii_letters           # returns a list of asci letters from a to z or 'A' to 'Z' 
         self.letter_label = tk.Label(self,text="",font=('Times',150,'normal'),bg="#120E4A",fg='white')
@@ -122,7 +124,8 @@ class LearningTest(tk.Frame):
 
 
     def instructionThread(self,*awrgs,**kwargs):
-     
+      
+
       tag = "instructionThread:"
       print(tag +" i am called ")
       instruction_word_dic = {
@@ -212,7 +215,8 @@ class LearningTest(tk.Frame):
       global totalquestions
       crctquestion = self.crct_letter_counter
       totalquestions = self.total_letter_counter
-      self.app.switchFrame(wordusefluency.WordUseFluency,self.app)
+      self.app.append(self)
+      self.app[0].switchFrame(wordusefluency.WordUseFluency,self.app[1:])
       
 
 

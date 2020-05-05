@@ -10,6 +10,7 @@ import startingPage
 import learningtest
 from gtts import gTTS 
 from playsound import playsound
+import evaluation
 language = 'en'
 
 
@@ -32,7 +33,8 @@ class ImageTestDyslexia(tk.Frame):
         tk.Label(self, font=('Times',24,'normal'), text="Initial Sound Fluency Test",bg = '#5CC7B2').grid(
             row=0, column=1)
         self.RECORDINGCOUNT = 0
-        self.app = awrgs[0]
+        self.app = list(awrgs)
+        print(self.app)
         self.instruction_label_counter=1
         self.init_result = False
         self.nextFlag = True
@@ -78,7 +80,7 @@ class ImageTestDyslexia(tk.Frame):
                 self.quick_instruction_label['text'] = "Processing....."
                 recognisedPhrase = r.recognize_google(audio)
                 print(recognisedPhrase)
-                if recognisedPhrase == word:
+                if recognisedPhrase.lower() == word.lower():
                     self.init_result = True
                     if(self.selected_word==word):
                         self.crct_answered+=1
@@ -183,6 +185,7 @@ class ImageTestDyslexia(tk.Frame):
 
 
     def instructionThread(self, *args, **kwargs):
+        
         tag="Instruction Thread" #it is an variable fot debugging
         #image_list global variable to hold images reference
         instruction_label_dic = {
@@ -347,12 +350,10 @@ class ImageTestDyslexia(tk.Frame):
             self.total_questions +=1
             temp_variable_timer = self.done_Timer_Flag
             self.lock.release()
-        print(self.image_string)
+        print(self.image_string)   
         print(self.crct_answered)
-        global imageCorrectAnswers
-        global totalImageAnswers
         imageCorrectAnswers = self.crct_answered
         totalImageAnswers = self.total_questions
         
 
-        self.app.switchFrame(learningtest.LearningTest,self.app)
+        self.app[0].switchFrame(learningtest.LearningTest,self)###########################################

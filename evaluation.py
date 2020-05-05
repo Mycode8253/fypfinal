@@ -10,6 +10,7 @@ from playsound import playsound
 import threading
 
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath('img')))
 
 image_list_other=[]
@@ -27,6 +28,7 @@ class Evaluation(tk.Frame):
         self.Label1.grid(
             row=2, column=1,pady=2)
         self.app = awrgs[0]
+       
         self.app.configure(background="#EA696B")
         self.Main_Heading.grid(row=0,column=1,pady=2)
         self.Main_Heading["text"] = "Evaluation"
@@ -41,6 +43,19 @@ class Evaluation(tk.Frame):
         global path
         self.image_label.grid(row=1,column=1,pady=2)
         self.Label1['text'] = "Hey you have done really good so far"
+        temp1 = awrgs[1]
+        for item1 in temp1:
+            print(item1)
+     
+        self.worduseclass = item1[1]
+        temp1= item1[0]
+        temp2=temp1[0]
+        self.learningtest = temp2[1]
+        self.imagetest = temp2[0]
+        self.imagetest = self.imagetest[0]
+        
+    
+    
         threading.Thread(target=self.processThread,args=(),daemon=True).start()
       
 
@@ -55,14 +70,14 @@ class Evaluation(tk.Frame):
         Label2 = tk.Label(self, font=('Times',24,'normal'), text="Game",bg = '#EA696B',fg='#FCF7D9')
         Label2.grid(
             row=3, column=1,pady=2)
-        Label2['text'] = " Here are the following results "
+        Label2['text'] = self.imagetest.crct_answered
         Label3 = tk.Label(self, font=('Times',24,'normal'), text="Game",bg = '#EA696B',fg='#FCF7D9')
         Label3.grid(
             row=4, column=1,pady=2)
-        Label3['text'] = " Here are the following results "
+        Label3['text'] = self.learningtest.crct_letter_counter
         Label4 = tk.Label(self, font=('Times',24,'normal'), text="Game",bg = '#EA696B',fg='#FCF7D9')
         Label4.grid(row=5, column=1,pady=2)
-        Label4['text'] = " Here are the following results "
+        Label4['text'] = self.worduseclass.crct_questions
         print("I am ending people")
 
 
