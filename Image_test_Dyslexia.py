@@ -189,11 +189,11 @@ class ImageTestDyslexia(tk.Frame):
         tag="Instruction Thread" #it is an variable fot debugging
         #image_list global variable to hold images reference
         instruction_label_dic = {
-            1:"Hello welcome to the test Initial Fluency Test",
+            1:"Hello welcome to Initial Fluency Test",
             2:"This test will go on for three minutes",
-            3:"We will be presenting you 4 pictures, we will name each picture",
-            4:"Then we will ask for the name of the picture that starts with the sound ",
-            5:"Then you should point to the picture or say it  orally",
+            3:"We will be presenting you 4 pictures and we will name each picture",
+            4:"Then we will ask for the name of the picture that starts with the initial sound ",
+            5:"Then you should select the picture and pronounce the sound or say it orally",
             6:"If you want to repeat the instruction then we will if not lets start the test!",
             
 
@@ -293,13 +293,14 @@ class ImageTestDyslexia(tk.Frame):
                 break
         image_label.grid_forget()
         button.grid_forget()
-        self.Question['text'] = "Select the picture that resembles a "
+        self.Question['text'] = "Listen to the sounds"
         threading.Thread(target=self.timerThread,args=(),daemon=True).start()
         temp_variable_timer = False
         self.quick_instruction_label.grid(row=2,column=1)
         while not temp_variable_timer:
 
             if self.answered_flag:
+                self.Question['text']  = "Listen to the sounds"
                 print(tag+"I am called")
                 temp_int_row = 3
                 temp_int_column=-2

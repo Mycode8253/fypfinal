@@ -36,9 +36,9 @@ class WordUseFluency(tk.Frame):
         self.app[0].configure(bg="#3E8188")
         #Helpfull variables
         self.instruction_dict = {
-            1:"Hey welcome to the test ",
-            2:"Listen to me How I use this word 'Green' in a sentense \n The grass is green ",
-            3:"Here is another word 'jump' \n  I would like to jump ",
+            1:"Hey welcome to  Word Use Fluency Test",
+            2:"Listen to me carefully, How I use this word 'Green' in a sentense, \n The grass is green ",
+            3:"Here is another word ' jump ' \n  I would like to jump ",
             4:"Now your turn use the word 'rabbit' ",
             5:"Good! You have done it so lets start the test...", 
         }
@@ -51,6 +51,9 @@ class WordUseFluency(tk.Frame):
             6:"eggs",
             7:"bath",
             8:"home",
+            9:"chair",
+            10:"shout",
+            11:"apple",
         }
         self.RECORDINGCOUNT = 0
         self.nextButtonFlag=False
@@ -136,11 +139,13 @@ class WordUseFluency(tk.Frame):
         path=BASE_DIR+"\\tinkerpro\\recordwordusetest"
         if self.instruction_counter in [1,2,3,5]:
             self.instruction_label['text' ] = self.instruction_dict[self.instruction_counter]
+            self.nextButton['state'] =tk.DISABLED
             myobj = gTTS(text=self.instruction_label['text'], lang=language, slow=False,) 
             myobj.save("recordwordusetest"+str(self.RECORDINGCOUNT)+".mp3")
             playsound("recordwordusetest"+str(self.RECORDINGCOUNT)+".mp3")
             os.remove(path+str(self.RECORDINGCOUNT)+".mp3")
             self.RECORDINGCOUNT+=1
+            self.nextButton['state'] = tk.NORMAL
         elif self.instruction_counter == 4:
             self.image_label.grid_forget()
             self.instruction_label['text'] = self.instruction_dict[self.instruction_counter]
@@ -239,7 +244,7 @@ class WordUseFluency(tk.Frame):
                             self.helper_label['text']  = "Listen carefully"
                         
                             print(self.word_dict[count_temp])
-                            self.instruction_label['text'] = "Use the word" +self.word_dict[count_temp]
+                            self.instruction_label['text'] = "Use the word " +self.word_dict[count_temp]
                             self.letter_label['text']=self.word_dict[count_temp]
                             myobj = gTTS(text=self.instruction_label['text'], lang=language, slow=False,) 
                             myobj.save("recordwordusetest"+str(self.RECORDINGCOUNT)+".mp3")

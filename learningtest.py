@@ -129,12 +129,12 @@ class LearningTest(tk.Frame):
       tag = "instructionThread:"
       print(tag +" i am called ")
       instruction_word_dic = {
-          1:"Welcome to the test..",
-          2:"Here are the instructions to follow it out",
+          1:"Welcome to the Letter Naming Fluency Test",
+          2:"Listen to the instructions carefully",
           3:"You will be getting letters slowly one by one for a period of time ",
           4:"You should be telling it loud, what is that letter ",
           5:"You will be given 5 seconds to speak out the letter",
-          6:"it keeps on going like that \n if you want to repeat again the instructions click on repeat again \n if not lets start!",
+          6:"The letter will be chnaging untill the time is over \n If you want to repeat again the instructions click on repeat again \n if not lets start!",
 
       }
       temp_int_counter =1
@@ -157,11 +157,13 @@ class LearningTest(tk.Frame):
       while(True):
         if self.next_flag and temp_int_counter<=6:
           self.instruction_label['text'] = instruction_word_dic[temp_int_counter]
+          self.start_button['state'] = tk.DISABLED
           myobj = gTTS(text=self.instruction_label['text'], lang=language, slow=False,) 
           myobj.save("recordlearningtest"+str(self.RECORDINGCOUNT)+".mp3")
           playsound("recordlearningtest"+str(self.RECORDINGCOUNT)+".mp3")
           os.remove(path+str(self.RECORDINGCOUNT)+".mp3")
           self.RECORDINGCOUNT+=1
+          self.start_button['state'] = tk.NORMAL
           self.start_button['text']='Next ->'
           self.next_flag=False
           if(temp_int_counter==6):

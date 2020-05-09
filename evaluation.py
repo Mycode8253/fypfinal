@@ -43,6 +43,9 @@ class Evaluation(tk.Frame):
         global path
         self.image_label.grid(row=1,column=1,pady=2)
         self.Label1['text'] = "Hey you have done really good so far"
+
+        # Dont touch this  
+        ######################################Sensitive code if one thing is changed then the whole thing has to be rewritten 
         temp1 = awrgs[1]
         for item1 in temp1:
             print(item1)
@@ -53,7 +56,7 @@ class Evaluation(tk.Frame):
         self.learningtest = temp2[1]
         self.imagetest = temp2[0]
         self.imagetest = self.imagetest[0]
-        
+        #####################################
     
     
         threading.Thread(target=self.processThread,args=(),daemon=True).start()
@@ -70,14 +73,34 @@ class Evaluation(tk.Frame):
         Label2 = tk.Label(self, font=('Times',24,'normal'), text="Game",bg = '#EA696B',fg='#FCF7D9')
         Label2.grid(
             row=3, column=1,pady=2)
-        Label2['text'] = self.imagetest.crct_answered
+            
+        temp1=self.imagetest.crct_answered/self.imagetest.total_questions
+        temp2= self.learningtest.crct_letter_counter/self.learningtest.total_letter_counter
+        temp3= self.worduseclass.crct_questions/self.worduseclass.total_questions
+
+        if temp1 >2 and temp2 >2 and temp3 >2:
+            Label2['text'] = "No risk at all"
+        elif (temp1>2 and temp2<2 and temp3 >2) or (temp1>2 and temp2 >2 and temp3<2):
+            Label2['text'] = " No risk at all but do refer in future"
+        elif (temp1<2 and temp2>2 and temp3 >2):
+            Label2['text'] = "Medium risk take the test one more time"
+        elif (temp1<2 and temp2<2 and temp3 >2) or (temp1>2 and temp2 <2 and temp3 < 2):
+            Label2['text'] = "Medium risk"
+        elif temp1<2 and temp2<2 and temp3 <2:
+            Label2['text'] = "At risk"
+            
+        
+   
+
+        Label2['text'] = "Initial Fluency Test"+str(self.imagetest.crct_answered/self.imagetest.total_questions) 
         Label3 = tk.Label(self, font=('Times',24,'normal'), text="Game",bg = '#EA696B',fg='#FCF7D9')
         Label3.grid(
             row=4, column=1,pady=2)
-        Label3['text'] = self.learningtest.crct_letter_counter
+        Label3['text'] = "Letter learning Fluency" + str(self.learningtest.crct_letter_counter/self.learningtest.total_letter_counter)
+
         Label4 = tk.Label(self, font=('Times',24,'normal'), text="Game",bg = '#EA696B',fg='#FCF7D9')
         Label4.grid(row=5, column=1,pady=2)
-        Label4['text'] = self.worduseclass.crct_questions
+        Label4['text'] = "Word Use Fluency Test" + str(self.worduseclass.crct_questions/self.worduseclass.total_questions)
         print("I am ending people")
 
 
